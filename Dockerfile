@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Stage 1: Build from source tarball to ensure OIDC is compiled in.
-# The Debian bookworm repos do not provide SOGo packages.
-# We pull the official 5.12.9 source release from inverse.ca and compile.
-# SOGo 5.12.x includes OpenID Connect support by default.
+# Debian bookworm repos do not have SOGo, but trixie/sid do.
+# We use the official Debian source tarball from ftp.debian.org
+# and compile it. SOGo 5.12.x includes OpenID Connect support.
 FROM debian:bookworm-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -31,13 +31,13 @@ RUN set -ex; \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-# Download SOGo 5.12.9 source from inverse.ca (official upstream)
-RUN curl --insecure -L -o /tmp/sogo-5.12.9.tar.gz \
-    https://www.inverse.ca/downloads/SOGo/Sources/SOGo-5.12.9.tar.gz
+# Download SOGo 5.12.9 source from Debian pool
+RUN curl -L -o /tmp/sogo_5.12.9.orig.tar.gz \
+    http://ftp.debian.org/debian/pool/main/s/sogo/sogo_5.12.9.orig.tar.gz
 
 # Extract and compile
-RUN mkdir -p /build && cd /build && tar xf /tmp/sogo-5.12.9.tar.gz
-WORKDIR /build/SOGo-5.12.9
+RUN mkdir -p /build && cd /build && tar xzf /tmp/sogo_5.12.9.orig.tar.gz
+WORKDIR /build/sogo-5.12.9
 RUN cmake . && make -j$(nproc)
 
 # Stage 2: Runtime image
@@ -68,7 +68,7 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*
 
 # Copy compiled SOGo from builder
-COPY --from=builder /build/SOGo-5.12.9 /usr/local/src/sogo
+COPY --from=builder /build/sogo-5.12.9 /usr/local/src/sogo
 WORKDIR /usr/local/src/sogo
 RUN make install
 
