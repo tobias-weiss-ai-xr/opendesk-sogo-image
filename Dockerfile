@@ -55,9 +55,9 @@ RUN set -ex; \
         libapache2-mod-proxy-uwsgi \
         libldap2-dev \
         libssl3 \
-        libmemcached4 \
+        libmemcached11 \
         libpq5 \
-        libmariadb-client-lgpl-dev-compat \
+        libmariadb-dev-compat \
         sqlite3 \
         libgpgme11 \
         libsasl2-2 \
