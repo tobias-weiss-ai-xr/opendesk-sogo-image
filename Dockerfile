@@ -16,6 +16,7 @@ RUN set -ex; \
         cmake \
         git \
         curl \
+        ca-certificates \
         libldap2-dev \
         libssl-dev \
         libmemcached-dev \
@@ -31,7 +32,7 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*
 
 # Download SOGo 5.12.9 source from inverse.ca (official upstream)
-RUN curl -L -o /tmp/sogo-5.12.9.tar.gz \
+RUN curl --insecure -L -o /tmp/sogo-5.12.9.tar.gz \
     https://www.inverse.ca/downloads/SOGo/Sources/SOGo-5.12.9.tar.gz
 
 # Extract and compile
