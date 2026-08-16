@@ -3,8 +3,8 @@
 
 # Stage 1: Build from source tarball to ensure OIDC is compiled in.
 # Debian bookworm repos do not have SOGo, but trixie/sid do.
-# We use the official Debian source tarball from ftp.debian.org
-# and compile it. SOGo 5.12.x includes OpenID Connect support.
+# We use the official Debian source tarball from ftp.debian.org.
+# SOGo 5.12.x includes OpenID Connect support by default.
 FROM debian:bookworm-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -35,9 +35,9 @@ RUN set -ex; \
 RUN curl -L -o /tmp/sogo_5.12.9.orig.tar.gz \
     http://ftp.debian.org/debian/pool/main/s/sogo/sogo_5.12.9.orig.tar.gz
 
-# Extract, change to directory, and compile
+# Extract and compile
 RUN mkdir -p /build && cd /build && tar xzf /tmp/sogo_5.12.9.orig.tar.gz
-RUN cd /build/SOGo-5.12.9 && cmake . && make -j$(nproc)
+RUN cd /build/SOGo-5.12.9 && cmake /build/SOGo-5.12.9 && make -j$(nproc)
 
 # Stage 2: Runtime image
 FROM debian:bookworm-slim
