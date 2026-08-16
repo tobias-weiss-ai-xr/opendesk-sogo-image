@@ -35,9 +35,9 @@ RUN set -ex; \
 RUN curl -L -o /tmp/sogo_5.12.9.orig.tar.gz \
     http://ftp.debian.org/debian/pool/main/s/sogo/sogo_5.12.9.orig.tar.gz
 
-# Extract and compile
+# Extract and compile - tarball unpacks to SOGo-5.12.9 (capital S)
 RUN mkdir -p /build && cd /build && tar xzf /tmp/sogo_5.12.9.orig.tar.gz
-WORKDIR /build/sogo-5.12.9
+WORKDIR /build/SOGo-5.12.9
 RUN cmake . && make -j$(nproc)
 
 # Stage 2: Runtime image
@@ -68,7 +68,7 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*
 
 # Copy compiled SOGo from builder
-COPY --from=builder /build/sogo-5.12.9 /usr/local/src/sogo
+COPY --from=builder /build/SOGo-5.12.9 /usr/local/src/sogo
 WORKDIR /usr/local/src/sogo
 RUN make install
 
